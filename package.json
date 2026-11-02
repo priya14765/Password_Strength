@@ -1,0 +1,9 @@
+{
+  "name": "local-password-strength-checker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "An offline, privacy-first password strength checker",
+  "scripts": {
+    "test": "node --test"
+  }
+}

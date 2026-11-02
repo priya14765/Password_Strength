@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b1220">
+    <meta name="description" content="Check password strength privately in your browser. Your password is never stored or transmitted.">
+    <title>Password Strength Checker</title>
+    <link rel="icon" href="assets/shield-check.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+    <script src="src/password-audit.js" defer></script>
+    <script src="src/app.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="Password Strength Checker home">
+        <img src="assets/shield-check.svg" alt="" width="38" height="38">
+        <span>Password<span class="brand-accent">Check</span></span>
+      </a>
+      <div class="header-actions">
+        <div class="privacy-chip">
+          <span class="privacy-dot" aria-hidden="true"></span>
+          100% local &amp; private
+        </div>
+        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to light mode">
+          <span class="theme-icon" aria-hidden="true">☀</span>
+          <span id="theme-label">Light mode</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Your security, your business</p>
+        <h1 id="page-title">A stronger password.<br><span>A safer you.</span></h1>
+        <p class="intro-copy">Get an instant strength check and practical tips. Your password is analyzed right here on your device—never sent anywhere.</p>
+      </section>
+
+      <section class="checker-card" aria-label="Password strength checker">
+        <div class="checker-main">
+          <label class="field-label" for="password-input">Enter a password to check</label>
+          <div class="password-field">
+            <input
+              id="password-input"
+              name="password"
+              type="password"
+              placeholder="Type a password..."
+              autocomplete="new-password"
+              autocapitalize="off"
+              spellcheck="false"
+              aria-describedby="privacy-note"
+            >
+            <button id="visibility-toggle" class="visibility-button" type="button" aria-pressed="false" aria-label="Show password">Show</button>
+          </div>
+          <p id="privacy-note" class="privacy-note">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.2 3.8 4.6v4.8c0 3.8 2.6 6.7 6.2 8.4 3.6-1.7 6.2-4.6 6.2-8.4V4.6L10 2.2Zm0 2.1 4.2 1.6v3.5c0 2.8-1.8 5-4.2 6.4-2.4-1.4-4.2-3.6-4.2-6.4V5.9L10 4.3Zm-.9 7.9-2-2 1.2-1.2 1 1 2.5-2.5L13 8.7l-3.9 3.5Z"/></svg>
+            <span>Checked on this device. Never uploaded or saved by this app.</span>
+          </p>
+
+          <section class="generator" aria-labelledby="generator-title">
+            <div class="generator-heading">
+              <h2 id="generator-title">Create a password</h2>
+              <span>Made with your browser's secure random generator</span>
+            </div>
+            <div class="generator-controls">
+              <label class="length-control" for="password-length">
+                <span>Length</span>
+                <input id="password-length" type="number" min="8" max="30" value="20" inputmode="numeric">
+              </label>
+            </div>
+            <div class="length-slider-row">
+              <label for="password-length-slider">Adjust length</label>
+              <input id="password-length-slider" type="range" min="8" max="30" value="20" aria-label="Adjust password length">
+              <output id="password-length-output" for="password-length password-length-slider">20</output>
+            </div>
+            <fieldset class="generator-options">
+              <legend>Alphanumeric + symbols</legend>
+              <label class="option-chip"><input type="checkbox" name="character-type" value="lowercase" checked><span>Lowercase</span></label>
+              <label class="option-chip"><input type="checkbox" name="character-type" value="uppercase" checked><span>Uppercase</span></label>
+              <label class="option-chip"><input type="checkbox" name="character-type" value="numbers" checked><span>Numbers</span></label>
+              <label class="option-chip"><input type="checkbox" name="character-type" value="symbols" checked><span>Symbols</span></label>
+            </fieldset>
+            <label class="option-chip avoid-lookalikes">
+              <input id="avoid-lookalikes" type="checkbox" checked>
+              <span>Avoid look-alike characters <small>(I, l, 1, O, 0)</small></span>
+            </label>
+            <div class="generator-actions">
+              <button id="generate-button" class="generate-button" type="button">Generate password</button>
+              <button id="copy-button" class="copy-button" type="button" disabled>Copy</button>
+            </div>
+            <p id="action-status" class="action-status" aria-live="polite"></p>
+          </section>
+
+          <div class="requirements">
+            <h2>Password checklist</h2>
+            <ul class="checklist">
+              <li data-check="length"><span class="check-icon" aria-hidden="true"></span>At least 8 characters</li>
+              <li data-check="lowercase"><span class="check-icon" aria-hidden="true"></span>Lowercase letter</li>
+              <li data-check="uppercase"><span class="check-icon" aria-hidden="true"></span>Uppercase letter</li>
+              <li data-check="number"><span class="check-icon" aria-hidden="true"></span>Number</li>
+              <li data-check="symbol"><span class="check-icon" aria-hidden="true"></span>Symbol</li>
+            </ul>
+          </div>
+
+          <button id="clear-button" class="clear-button" type="button">Clear password</button>
+        </div>
+
+        <aside class="score-panel" aria-live="polite" aria-atomic="true">
+          <div class="score-heading">
+            <h2>Strength</h2>
+            <span id="strength-label" class="strength-label">Waiting</span>
+          </div>
+          <div class="strength-meter" role="meter" aria-label="Password strength" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0">
+            <span class="meter-segment"></span>
+            <span class="meter-segment"></span>
+            <span class="meter-segment"></span>
+            <span class="meter-segment"></span>
+          </div>
+          <div class="entropy-row">
+            <span>Estimated entropy</span>
+            <strong id="entropy-value">— bits</strong>
+          </div>
+          <p id="strength-description" class="strength-description">Enter a password to see a private, on-device assessment.</p>
+
+          <section class="pattern-insights" aria-labelledby="insights-title" aria-live="polite">
+            <h3 id="insights-title">Pattern check</h3>
+            <ul id="insight-list">
+              <li>Enter a password to check for common patterns.</li>
+            </ul>
+          </section>
+
+          <div class="suggestions">
+            <h3>Suggestions</h3>
+            <ul id="suggestion-list">
+              <li>Use a long, unique password that you do not reuse.</li>
+              <li>Consider a password manager for creating and storing passwords.</li>
+            </ul>
+          </div>
+        </aside>
+      </section>
+
+      <section class="privacy-banner" aria-label="Privacy promise">
+        <div class="privacy-banner-icon" aria-hidden="true">
+          <img src="assets/shield-check.svg" alt="" width="30" height="30">
+        </div>
+        <div>
+          <h2>Private by design. Secure by default.</h2>
+          <p>Analysis and generation stay on this device. Copy only happens when you choose it; nothing is sent to a server. Theme choice lasts until reload.</p>
+        </div>
+        <span class="offline-label">Works offline</span>
+      </section>
+    </main>
+
+    <footer>
+      <p>Made for safer habits. <span>Strength estimates are educational—not a guarantee against compromise.</span></p>
+    </footer>
+  </body>
+</html>
